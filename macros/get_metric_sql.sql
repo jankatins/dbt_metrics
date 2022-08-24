@@ -79,8 +79,12 @@ metrics there are #}
         {% set metric_time_grains = loop_metric.time_grains%}
         {% set metric_dimensions = loop_metric.dimensions%}
         {% set metric_filters = loop_metric.filters%}
+        {% set metric_lookback = loop_metric.meta %}
         {% set metric_base_model = loop_metric.model.replace('"','\'').split('\'')[1]  %}
         {% set metric_model = metrics.get_model_relation(metric_base_model if execute else "") %}
+        
+        {% do log("Lookback Window: " ~ metric_lookback, info=True )%}
+
 
         {{ metrics.build_metric_sql(metric_name, metric_type, metric_sql, metric_timestamp, metric_filters, metric_model, grain, non_calendar_dimensions, secondary_calculations, start_date, end_date,calendar_tbl, relevant_periods, calendar_dimensions,dimensions_provided) }}
     {% endfor %}
@@ -117,8 +121,12 @@ this is only a single metric and not an expression metric #}
         {% set metric_time_grains = single_metric.time_grains%}
         {% set metric_dimensions = single_metric.dimensions%}
         {% set metric_filters = single_metric.filters%}
+        {% set metric_lookback = single_metric.meta.lookback %}
         {% set metric_base_model = single_metric.model.replace('"','\'').split('\'')[1]  %}
         {% set metric_model = metrics.get_model_relation(metric_base_model if execute else "") %}
+
+        {% do log("Lookback Window: " ~ metric_lookback, info=True )%}
+
 
         {{ metrics.build_metric_sql(metric_name, metric_type, metric_sql, metric_timestamp, metric_filters, metric_model, grain, non_calendar_dimensions, secondary_calculations, start_date, end_date,calendar_tbl, relevant_periods, calendar_dimensions,dimensions_provided) }}
     {% endfor %}
