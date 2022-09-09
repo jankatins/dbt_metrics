@@ -2,7 +2,7 @@
     
     {#- This is the SQL Gen part - we've broken each component out into individual macros -#}
     {#- We broke this out so it can loop for composite metrics -#}
-    {{ metrics.gen_aggregate_cte(
+    {{ dbt_metrics.gen_aggregate_cte(
         metric_dictionary=metric_dictionary,
         grain=grain, 
         dimensions=dimensions, 
@@ -19,25 +19,22 @@
 
         {%- if dimensions_provided == true -%}
         
-            {{ metrics.gen_dimensions_cte(
+            {{ dbt_metrics.gen_dimensions_cte(
                 metric_name=metric_dictionary.name, 
                 dimensions=dimensions
             ) }}
         
         {%- endif -%}
 
-
-        {{ metrics.gen_spine_time_cte(
-            metric_name=metric_dictionary.name, 
-            grain=grain, 
-            dimensions=dimensions, 
-            secondary_calculations=secondary_calculations, 
-            relevant_periods=relevant_periods, 
-            calendar_dimensions=calendar_dimensions, 
-            dimensions_provided=dimensions_provided
-        )}}
-
-    {%- endif -%}
+    {{ metrics.gen_spine_time_cte(
+        metric_name=metric_dictionary.name, 
+        grain=grain, 
+        dimensions=dimensions, 
+        secondary_calculations=secondary_calculations, 
+        relevant_periods=relevant_periods, 
+        calendar_dimensions=calendar_dimensions, 
+        dimensions_provided=dimensions_provided
+    )}}
 
     {{ metrics.gen_metric_cte(
         metric_name=metric_dictionary.name, 
