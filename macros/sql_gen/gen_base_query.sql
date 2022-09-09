@@ -1,5 +1,5 @@
 {% macro gen_base_query(metric_dictionary, grain, dimensions, secondary_calculations, start_date, end_date, calendar_tbl, relevant_periods, calendar_dimensions) %}
-    {{ return(adapter.dispatch('gen_base_query', 'metrics')(metric_dictionary, grain, dimensions, secondary_calculations, start_date, end_date, calendar_tbl, relevant_periods, calendar_dimensions)) }}
+    {{ return(adapter.dispatch('gen_base_query', 'dbt_metrics')(metric_dictionary, grain, dimensions, secondary_calculations, start_date, end_date, calendar_tbl, relevant_periods, calendar_dimensions)) }}
 {% endmacro %}
 
 {% macro default__gen_base_query(metric_dictionary, grain, dimensions, secondary_calculations, start_date, end_date, calendar_tbl, relevant_periods, calendar_dimensions) %}
@@ -28,9 +28,9 @@
                 calendar_table.{{ calendar_dim }},
             {%- endfor %}
 
-            {%- if metric_dictionary.sql and metric_dictionary.sql | replace('*', '') | trim != '' %}
-                base_model.{{ metric_dictionary.sql }} as property_to_aggregate
-            {%- elif metric_dictionary.dbt.type_numeric == 'count' -%}
+            {%- if metric_dictionary.expression and metric_dictionary.expression | replace('*', '') | trim != '' %}
+                base_model.{{ metric_dictionary.expression }} as property_to_aggregate
+            {%- elif metric_dictionary.calculation_method == 'count' -%}
             1 as property_to_aggregate /*a specific expression to aggregate wasn't provided, so this effectively creates count(*) */
             {%- else -%}
                 {%- do exceptions.raise_compiler_error("Expression to aggregate is required for non-count aggregation in metric `" ~ metric_dictionary.name ~ "`") -%}  

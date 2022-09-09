@@ -1,5 +1,5 @@
 {%- macro gen_aggregate_cte(metric_dictionary, grain, dimensions, secondary_calculations, start_date, end_date, calendar_tbl, relevant_periods, calendar_dimensions) -%}
-    {{ return(adapter.dispatch('gen_aggregate_cte', 'metrics')(metric_dictionary, grain, dimensions, secondary_calculations, start_date, end_date, calendar_tbl, relevant_periods, calendar_dimensions)) }}
+    {{ return(adapter.dispatch('gen_aggregate_cte', 'dbt_metrics')(metric_dictionary, grain, dimensions, secondary_calculations, start_date, end_date, calendar_tbl, relevant_periods, calendar_dimensions)) }}
 {%- endmacro -%}
 
 {%- macro default__gen_aggregate_cte(metric_dictionary, grain, dimensions, secondary_calculations, start_date, end_date, calendar_tbl, relevant_periods, calendar_dimensions) %}
@@ -37,7 +37,7 @@
 
         {#- This line performs the relevant aggregation by calling the 
         gen_primary_metric_aggregate macro. Take a look at that one if you're curious -#}
-        {{ metrics.gen_primary_metric_aggregate(metric_dictionary.type, 'property_to_aggregate') }} as {{ metric_dictionary.name }},
+        {{ metrics.gen_primary_metric_aggregate(metric_dictionary.calculation_method, 'property_to_aggregate') }} as {{ metric_dictionary.name }},
         
         {%- if grain != 'all_time' %}
         {{ dbt_utils.bool_or('metric_date_day is not null') }} as has_data

@@ -1,12 +1,12 @@
 version: 2 
 
 metrics:
-  - name: expression_metric
+  - name: derived_metric
     label: Profit ($)
     timestamp: order_date
     time_grains: [day, week]
-    type: expression
-    sql: "{{metric('base_sum_metric')}} - {{metric('base_average_metric')}}"
+    calculation_method: derived
+    expression: "{{metric('base_sum_metric')}} - {{metric('base_average_metric')}}"
     dimensions:
       - had_discount
       - order_country
@@ -15,8 +15,8 @@ metrics:
     label: Ratio ($)
     timestamp: order_date
     time_grains: [day, week, month, all_time]
-    type: expression
-    sql: "{{metric('base_sum_metric')}} / {{metric('base_average_metric')}}"
+    calculation_method: derived
+    expression: "{{metric('base_sum_metric')}} / {{metric('base_average_metric')}}"
     dimensions:
       - had_discount
       - order_country
